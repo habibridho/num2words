@@ -7,18 +7,19 @@ import "math"
 const groupsNumber int = 4
 
 var _smallNumbers = []string{
-	"zero", "one", "two", "three", "four",
-	"five", "six", "seven", "eight", "nine",
-	"ten", "eleven", "twelve", "thirteen", "fourteen",
-	"fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+	"nol", "satu", "dua", "tiga", "empat",
+	"lima", "enam", "tujuh", "delapan", "sembilan",
+	"sepuluh", "sebelas", "dua belas", "tiga belas", "empat belas",
+	"lima belas", "enam belas", "tujuh belas", "delapan belas", "sembilan belas",
 }
 var _tens = []string{
-	"", "", "twenty", "thirty", "forty", "fifty",
-	"sixty", "seventy", "eighty", "ninety",
+	"", "", "dua puluh", "tiga puluh", "empat puluh", "lima puluh",
+	"enam puluh", "tujuh puluh", "delapan puluh", "sembilan puluh",
 }
 var _scaleNumbers = []string{
-	"", "thousand", "million", "billion",
+	"", "ribu", "juta", "milyar",
 }
+var _tensSeparator = " "
 
 type digitGroup int
 
@@ -58,7 +59,12 @@ func convert(number int, useAnd bool) string {
 
 	for i := 1; i < groupsNumber; i++ {
 		if groups[i] != 0 {
-			prefix := textGroup[i] + " " + _scaleNumbers[i]
+			var prefix string
+			if textGroup[i] == "satu" && _scaleNumbers[i] == "ribu" {
+				prefix = "seribu"
+			} else {
+				prefix = textGroup[i] + " " + _scaleNumbers[i]
+			}
 
 			if len(combined) != 0 {
 				prefix += separator(and)
@@ -86,7 +92,11 @@ func digitGroup2Text(group digitGroup, useAnd bool) (ret string) {
 	tensUnits := intMod(int(group), 100)
 
 	if hundreds != 0 {
-		ret += _smallNumbers[hundreds] + " hundred"
+		if hundreds == 1 {
+			ret += "seratus"
+		} else {
+			ret += _smallNumbers[hundreds] + " ratus"
+		}
 
 		if tensUnits != 0 {
 			ret += separator(useAnd)
@@ -100,7 +110,7 @@ func digitGroup2Text(group digitGroup, useAnd bool) (ret string) {
 		ret += _tens[tens]
 
 		if units != 0 {
-			ret += "-" + _smallNumbers[units]
+			ret += _tensSeparator + _smallNumbers[units]
 		}
 	} else if tensUnits != 0 {
 		ret += _smallNumbers[tensUnits]
@@ -113,7 +123,7 @@ func digitGroup2Text(group digitGroup, useAnd bool) (ret string) {
 // number groups.
 func separator(useAnd bool) string {
 	if useAnd {
-		return " and "
+		return " dan "
 	}
 	return " "
 }
