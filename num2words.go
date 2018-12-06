@@ -1,7 +1,11 @@
 // Package num2words implements numbers to words converter.
 package num2words
 
-import "math"
+import (
+	"math"
+	"strconv"
+	"strings"
+)
 
 // how many digit's groups to process
 const groupsNumber int = 4
@@ -19,13 +23,31 @@ var _tens = []string{
 var _scaleNumbers = []string{
 	"", "ribu", "juta", "milyar",
 }
+var _decimal = "koma"
 var _tensSeparator = " "
+var _decimalSeparator = ","
 
 type digitGroup int
 
 // Convert converts number into the words representation.
 func Convert(number int) string {
 	return convert(number, false)
+}
+
+func ConvertFloat(number float64, precision int) string {
+	numberStr := strconv.FormatFloat(number, 'f', precision, 64)
+	temp := strings.Split(numberStr, ".")
+	integerPart, _ := strconv.Atoi(temp[0])
+	fractionPart := temp[1]
+
+	ret := convert(integerPart, false)
+	ret += " " + _decimal
+	for i := range fractionPart {
+		digit, _ := strconv.Atoi(string(fractionPart[i]))
+		ret += " " + _smallNumbers[digit]
+	}
+
+	return ret
 }
 
 // ConvertAnd converts number into the words representation

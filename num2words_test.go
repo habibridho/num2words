@@ -52,6 +52,15 @@ func TestConvert(t *testing.T) {
 	})
 }
 
+func TestConvertFloat(t *testing.T) {
+	Convert := num2words.ConvertFloat
+
+	Convey("Should convert float correctly", t, func() {
+		So(Convert(float64(0.535), 2), ShouldEqual, "nol koma lima empat")
+		So(Convert(float64(17.1), 1), ShouldEqual, "tujuh belas koma satu")
+	})
+}
+
 func ExampleConvert() {
 	fmt.Println(num2words.Convert(11))
 	fmt.Println(num2words.Convert(123))
